@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ZenSkyezz Store PRO</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif;}
+
+body{
+background:radial-gradient(circle at top,#151522,#0f0f14);
+color:#fff;
+overflow-x:hidden;
+}
+
+/* HEADER */
+header{
+padding:16px 8%;
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:rgba(255,255,255,0.05);
+backdrop-filter:blur(14px);
+position:sticky;
+top:0;
+z-index:100;
+border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+.logo{
+font-size:22px;
+font-weight:800;
+background:linear-gradient(90deg,#00ffb3,#00b7ff);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+input{
+padding:8px 12px;
+border-radius:10px;
+border:none;
+outline:none;
+background:#1b1b24;
+color:#fff;
+width:180px;
+}
+
+/* CART BTN */
+.cart-btn{
+background:linear-gradient(90deg,#00ffb3,#00b7ff);
+color:#000;
+padding:8px 12px;
+border-radius:12px;
+font-weight:900;
+cursor:pointer;
+display:flex;
+gap:8px;
+}
+
+/* SECTION */
+.section{padding:60px 8%;}
+.title{text-align:center;font-size:32px;margin-bottom:30px;font-weight:800;}
+
+/* CARD */
+.card{
+background:rgba(255,255,255,0.04);
+backdrop-filter:blur(14px);
+padding:20px;
+border-radius:20px;
+margin-top:20px;
+border:1px solid rgba(255,255,255,0.08);
+position:relative;
+transition:0.25s;
+}
+
+.card:hover{
+transform:translateY(-6px);
+box-shadow:0 20px 50px rgba(0,255,179,0.15);
+}
+
+.card img{
+width:100%;
+max-height:180px;
+object-fit:cover;
+border-radius:14px;
+margin-bottom:10px;
+}
+
+/* PRICE */
+.price{
+display:inline-block;
+padding:6px 12px;
+border-radius:999px;
+background:linear-gradient(90deg,#00ffb3,#00b7ff);
+color:#000;
+font-weight:900;
+font-size:13px;
+}
+
+/* BUTTON */
+.buy-btn{
+display:block;
+text-align:center;
+padding:11px;
+background:linear-gradient(90deg,#00ffb3,#00b7ff);
+color:#000;
+border-radius:12px;
+font-weight:900;
+margin-top:8px;
+cursor:pointer;
+}
+
+/* FF ROW */
+.ff-row{
+background:#181820;
+padding:8px;
+border-radius:10px;
+margin-top:6px;
+font-size:13px;
+opacity:0.9;
+}
+
+/* BADGE */
+.badge{
+position:absolute;
+top:12px;
+right:12px;
+background:#ff3b3b;
+padding:5px 10px;
+border-radius:999px;
+font-size:11px;
+font-weight:800;
+}
+
+/* CART PANEL */
+.cart-panel{
+position:fixed;
+right:-420px;
+top:0;
+width:360px;
+height:100%;
+background:#111;
+padding:20px;
+transition:0.3s;
+overflow:auto;
+z-index:999;
+}
+
+.cart-panel.active{right:0;}
+
+.cart-item{
+background:#1b1b24;
+padding:10px;
+border-radius:10px;
+margin-top:10px;
+}
+
+.remove{
+background:red;
+color:#fff;
+border:none;
+padding:5px 8px;
+border-radius:6px;
+cursor:pointer;
+margin-top:5px;
+}
+
+.total{
+margin-top:10px;
+color:#00ffb3;
+font-weight:900;
+}
+
+/* POPUP */
+.popup{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,0.6);
+display:none;
+justify-content:center;
+align-items:center;
+z-index:9999;
+}
+
+.popup-box{
+background:#111;
+padding:20px;
+border-radius:15px;
+width:320px;
+}
+
+.popup button{
+width:100%;
+margin-top:10px;
+padding:10px;
+border:none;
+border-radius:10px;
+font-weight:900;
+cursor:pointer;
+}
+
+/* ANIM */
+.bubble{
+position:fixed;
+width:14px;
+height:14px;
+border-radius:50%;
+background:#00ffb3;
+animation:fly .7s ease forwards;
+}
+
+@keyframes fly{
+0%{opacity:1;transform:scale(1);}
+100%{opacity:0;transform:translate(120px,-200px) scale(.2);}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="logo">ZenSkyezz Store PRO</div>
+
+<input id="search" placeholder="Cari..." oninput="searchItem()">
+
+<div class="cart-btn" onclick="toggleCart()">
+🛒 <span id="count">0</span>
+</div>
+</header>
+
+<!-- CART -->
+<div class="cart-panel" id="cart">
+<h3>Keranjang</h3>
+<div id="cartItems"></div>
+<div class="total" id="total">Total: Rp 0</div>
+<button class="buy-btn" onclick="openPopup()">Checkout</button>
+</div>
+
+<!-- POPUP -->
+<div class="popup" id="popup">
+<div class="popup-box">
+<h3>Konfirmasi</h3>
+<div id="popupList"></div>
+<div id="popupTotal"></div>
+<button style="background:#00ffb3" onclick="confirmBuy()">Bayar</button>
+<button style="background:#333;color:#fff" onclick="closePopup()">Batal</button>
+</div>
+</div>
+
+<section class="section">
+<div class="title">🔥 STORE PREMIUM</div>
+
+<!-- COPILOT -->
+<div class="card" data-name="copilot">
+<div class="badge">HOT</div>
+<img src="https://i.ibb.co/QFTTJ3LK/Screenshot.jpg">
+<h2>Copilot v33</h2>
+<div class="price">10K - 100K</div>
+
+<div class="buy-btn" onclick="add('Copilot 1D',10000,this)">1 Hari</div>
+<div class="buy-btn" onclick="add('Copilot 7D',30000,this)">7 Hari</div>
+<div class="buy-btn" onclick="add('Copilot 1M',50000,this)">1 Bulan</div>
+<div class="buy-btn" onclick="add('Copilot P',100000,this)">Permanent</div>
+</div>
+
+<!-- FF BETA -->
+<div class="card" data-name="ff beta">
+<div class="badge">BEST</div>
+<img src="https://i.ibb.co/9Hq78w0F/ff.jpg">
+
+<h2>FF Beta</h2>
+<div class="price">5K - 12K</div>
+
+<div class="ff-row"></div>
+<div class="buy-btn" onclick="add('FF Reseller',5000,this)">Beli Reseller</div>
+
+<div class="ff-row"></div>
+<div class="buy-btn" onclick="add('FF Admin',10000,this)">Beli Admin</div>
+
+<div class="ff-row"></div>
+<div class="buy-btn" onclick="add('FF Dev',12000,this)">Beli Dev</div>
+</div>
+
+<!-- BODY -->
+<div class="card" data-name="body">
+<div class="badge">NEW</div>
+<img src="https://i.ibb.co/Kxstxf85/IMG.jpg">
+
+<h2>Body Headshot</h2>
+<div class="price">100K - 200K</div>
+
+<div class="buy-btn" onclick="add('No Update',100000,this)">No Update</div>
+<div class="buy-btn" onclick="add('Update',200000,this)">Update</div>
+</div>
+
+</section>
+
+<script>
+let cart=[];
+
+function add(name,price,el){
+cart.push({name,price});
+update();
+bubble(el);
+}
+
+function update(){
+let total=0;
+document.getElementById("count").innerText=cart.length;
+
+cart.forEach(c=>total+=c.price);
+document.getElementById("total").innerText="Total: Rp "+total.toLocaleString();
+
+let box=document.getElementById("cartItems");
+box.innerHTML="";
+cart.forEach((c,i)=>{
+box.innerHTML+=`
+<div class="cart-item">
+${c.name} - Rp ${c.price}
+<br>
+<button class="remove" onclick="removeItem(${i})">Hapus</button>
+</div>`;
+});
+}
+
+function removeItem(i){
+cart.splice(i,1);
+update();
+}
+
+function toggleCart(){
+document.getElementById("cart").classList.toggle("active");
+}
+
+function openPopup(){
+let list="",total=0;
+cart.forEach(c=>{
+list+=c.name+"<br>";
+total+=c.price;
+});
+document.getElementById("popupList").innerHTML=list;
+document.getElementById("popupTotal").innerHTML="Total: Rp "+total.toLocaleString();
+document.getElementById("popup").style.display="flex";
+}
+
+function closePopup(){
+document.getElementById("popup").style.display="none";
+}
+
+function confirmBuy(){
+let msg="ORDER:%0A";
+cart.forEach(c=>{
+msg+=c.name+" - "+c.price+"%0A";
+});
+window.location.href="https://t.me/Zen_Zaky?text="+encodeURIComponent(msg);
+}
+
+function searchItem(){
+let v=document.getElementById("search").value.toLowerCase();
+document.querySelectorAll(".card").forEach(c=>{
+c.style.display=c.getAttribute("data-name").includes(v)?"block":"none";
+});
+}
+
+function bubble(el){
+let b=document.createElement("div");
+b.className="bubble";
+document.body.appendChild(b);
+let r=el.getBoundingClientRect();
+b.style.left=r.left+"px";
+b.style.top=r.top+"px";
+setTimeout(()=>b.remove(),700);
+}
+</script>
+
+</body>
+</html>
